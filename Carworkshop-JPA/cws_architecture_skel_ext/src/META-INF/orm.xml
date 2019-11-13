@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings 
+	xmlns="http://java.sun.com/xml/ns/persistence/orm" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  	version="2.0">
+
+	<!-- Averia quieries --> 
+	<named-query name="Averia.findByIds">
+		<query>select a 
+				from Averia a 
+				where a.id in ?1</query>
+	</named-query>
+
+	<named-query name="Averia.findNoFacturadasByDni">
+		<query>
+			select a 
+			from Averia a 
+			where a.vehiculo.cliente.dni = ?1 
+				and a.status = uo.ri.model.types.AveriaStatus.TERMINADA 
+		</query>
+	</named-query>
+	
+	<!-- MedioPago queries -->
+	<named-query name="MedioPago.findByInvoiceId">
+		<query>
+			select m 
+			from Factura f 
+				join f.averias a 
+				join a.vehiculo.cliente c 
+				join c.mediosPago m 
+			where f.id = ?1
+		</query>
+	</named-query>
+	
+	<named-query name="MedioPago.findByClientId">
+		<query>
+			select m
+			from MedioPago m
+			where m.cliente.id = ?1
+		</query>
+	</named-query>
+	
+	<!-- Mecanico queries -->
+	<named-query name="Mecanico.findByDni">
+		<query>
+			select m 
+			from Mecanico m 
+			where m.dni = ?1
+		</query>
+	</named-query>
+
+	<named-query name="Mecanico.findAll">
+		<query>
+			select m 
+			from Mecanico m 
+		</query>
+	</named-query>
+	
+	<named-query name="Mecanico.findActive">
+		<query>
+			select m
+			from Contract c join c.mecanico m
+			where c.status = uo.ri.model.types.ContractStatus.ACTIVO
+		</query>
+	</named-query>
+
+	<!-- Factura queries -->
+	<named-query name="Factura.findByNumber">
+		<query>select f 
+				from Factura f 
+				where f.numero = ?1</query>
+	</named-query>
+	
+	<named-query name="Factura.getNextInvoiceNumber">
+		<query>select coalesce(max(f.numero) + 1, 1) 
+				from Factura f</query>
+	</named-query>
+	
+	<!-- ContractType queries -->
+	<named-query name="ContractType.findByName">
+		<query>
+			select ct 
+			from ContractType ct
+			where ct.name = ?1
+		</query>
+	</named-query>
+	
+	<!-- Payroll queries -->
+	<named-query name="Payroll.findByMechanicId">
+		<query>
+			select n
+			from Mecanico m 
+				join m.contratos c 
+				join c.nominas n
+			where m.id = ?1
+		</query>
+	</named-query>
+	
+	<named-query name="Payroll.findLastPayrolls">
+		<query>
+			select p 
+			from Payroll p
+			where p.date = ?1
+		</query>
+	</named-query>
+	
+	<!-- ContractCategory queries -->
+	<named-query name="ContractCategory.findByName">
+		<query>
+			select cc 
+			from ContractCategory cc
+			where cc.name = ?1
+		</query>
+	</named-query>
+	
+<!-- 
+	Use this format if your query has 
+	numeric comparisons as the one in this example
+	
+	<named-query name="findItemsOnSaleByCategoryId">
+		<query>
+			<![CDATA[
+			select i 
+				from Item i join i.categories c
+				where c.id = ?2
+					and i.startDate <= ?1
+					and i.endDate >= ?1 
+			]]>
+		</query>
+	</named-query>
+ -->		
+ 
+ <!-- Anotaciones de mapeo -->
+  	
+
+</entity-mappings>
